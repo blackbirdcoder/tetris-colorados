@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Tetris Colorados</title>
+        <link rel="stylesheet" href="css/main.css" />
+    </head>
+    <body class="page">
+        <div class="page-information">
+            <span class="page-information__title">I work only on a desktop browser</span>
+            <span class="page-information__text">Your device's screen is too small! The game is unavailable!</span>
+        </div>
+        <div class="main">
+            <div id="windowGameWin" class="game-win">
+                <div class="game-win__content-top">
+                    <span class="game-win__title">You are a winner</span>
+                    <span class="game-win__text"
+                        >Dear friend, you did the impossible! As the game's author, I warmly congratulate you on saving
+                        the harvest!</span
+                    >
+                </div>
+                <div class="game-win__content-middle">
+                    <div class="game-win__content-left">
+                        <div class="game-win__picture-box">
+                            <img class="game-win__picture" src="assets/images/potato-win.svg" alt="potato win" />
+                        </div>
+                    </div>
+                    <div class="game-win__content-right">
+                        <div class="game-win__record-box">
+                            <span class="game-win__title game-win__title_position">Record: </span>
+                            <span
+                                id="gameWinRecord"
+                                class="game-win__title game-win__title_position game-win__title_theme_white"
+                            ></span>
+                        </div>
+                        <div class="game-win__line-box">
+                            <span class="game-win__title game-win__title_position">Line: </span>
+                            <span
+                                id="gameWinLine"
+                                class="game-win__title game-win__title_position game-win__title_theme_white"
+                            ></span>
+                        </div>
+                        <div class="game-win__score-box">
+                            <span class="game-win__title game-win__title_position">Score: </span>
+                            <span
+                                id="gameWinScore"
+                                class="game-win__title game-win__title_position game-win__title_theme_white"
+                            ></span>
+                        </div>
+                        <div class="game-win__level-box">
+                            <span class="game-win__title game-win__title_position">Level: </span>
+                            <span
+                                id="gameWinLevel"
+                                class="game-win__title game-win__title_position game-win__title_theme_white"
+                            ></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-win__content-bottom">
+                    <div class="game-win__button">
+                        <button class="button btnNewGame">
+                            <img class="button__picture" src="assets/images/button.svg" alt="button" />
+                            <span class="button__text">new game</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="windowGameOver" class="game-over">
+                <div class="game-over__notification">
+                    <div class="game-over__decor game-over__decor_left">
+                        <img class="game-over__picture" src="assets/images/leafLeft.svg" alt="leaf eat" />
+                    </div>
+                    <span class="game-over__title">Game Over</span>
+                    <span class="game-over__text"
+                        >Sorry, but the bugs have already eaten the future food. Try again!</span
+                    >
+                    <div class="game-over__table">
+                        <table class="table">
+                            <tr class="table__row">
+                                <td class="table__cell">
+                                    <span class="game-over__text game-over__text-small game-over__text_position"
+                                        >record</span
+                                    >
+                                </td>
+                                <td class="table__cell">
+                                    <span class="game-over__text game-over__text-small game-over__text_position"
+                                        >score</span
+                                    >
+                                </td>
+                                <td class="table__cell">
+                                    <span class="game-over__text game-over__text-small game-over__text_position"
+                                        >line</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr class="table__row table__row-size">
+                                <td class="table__cell">
+                                    <span id="gameOverRecord" class="game-over__text game-over__text-small"></span>
+                                </td>
+                                <td class="table__cell">
+                                    <span id="gameOverScore" class="game-over__text game-over__text-small"></span>
+                                </td>
+                                <td class="table__cell">
+                                    <span id="gameOverLine" class="game-over__text game-over__text-small"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="game-over__button-box">
+                        <button class="button btnNewGame">
+                            <img class="button__picture" src="assets/images/button.svg" alt="button" />
+                            <span class="button__text">new game</span>
+                        </button>
+                    </div>
+                    <div class="game-over__decor game-over__decor_right">
+                        <img class="game-over__picture" src="assets/images/leafRight.svg" alt="leaf eat" />
+                    </div>
+                </div>
+            </div>
+            <div class="main__content-left">
+                <div class="decor decor_position">
+                    <img class="decor__picture" src="assets/images/raspberries.svg" alt="raspberries" />
+                </div>
+                <div class="main__information-panel information-panel">
+                    <div class="information-panel__content-text">
+                        <span class="information-panel__text">next</span>
+                    </div>
+                    <div class="information-panel__content-board">
+                        <img class="information-panel__picture" src="assets/images/board.svg" alt="board" />
+                        <div id="nextFigure" class="information-panel__next-figure"></div>
+                    </div>
+                </div>
+                <div class="main__menu">
+                    <ul class="list-menu">
+                        <li class="list-menu__item">
+                            <button class="button btnNewGame">
+                                <img class="button__picture" src="assets/images/button.svg" alt="button" />
+                                <span class="button__text">new game</span>
+                            </button>
+                        </li>
+                        <li class="list-menu__item">
+                            <button id="pause" class="button">
+                                <img class="button__picture" src="assets/images/button.svg" alt="button" />
+                                <span class="button__text">pause</span>
+                            </button>
+                        </li>
+                        <li class="list-menu__item">
+                            <button class="button">
+                                <img class="button__picture" src="assets/images/button.svg" alt="button" />
+                                <span class="button__text">sound</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="decor-bottom">
+                    <img class="decor-bottom__picture" src="assets/images/larva.svg" alt="larva" />
+                </div>
+            </div>
+            <div class="main__content-middle">
+                <div id="scene" class="scene"></div>
+            </div>
+            <div class="main__content-right">
+                <div class="decor-right decor_position-right">
+                    <img class="decor__picture" src="assets/images/raspberries.svg" alt="raspberries" />
+                </div>
+                <div class="information-panel information-panel_right">
+                    <div class="information-panel__content-top">
+                        <div class="information-panel__content-left">
+                            <div class="information-panel__content-text">
+                                <span class="information-panel__text">score</span>
+                            </div>
+                            <div class="information-panel__content-board information-panel__content-board_size">
+                                <img
+                                    class="information-panel__picture information-panel__picture_size"
+                                    src="assets/images/board-h.svg"
+                                    alt="board"
+                                />
+                                <div id="score" class="information-panel__out">10</div>
+                            </div>
+                        </div>
+                        <div class="information-panel__content-right">
+                            <div class="information-panel__content-text">
+                                <span class="information-panel__text">record</span>
+                            </div>
+                            <div class="information-panel__content-board information-panel__content-board_size">
+                                <img
+                                    class="information-panel__picture information-panel__picture_size"
+                                    src="assets/images/board-h.svg"
+                                    alt="board"
+                                />
+                                <div id="record" class="information-panel__out">100</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="information-panel__content-bottom">
+                        <div class="information-panel__content-left information-panel__content-left_position">
+                            <div class="information-panel__content-text">
+                                <span class="information-panel__text">line</span>
+                            </div>
+                            <div class="information-panel__content-board information-panel__content-board_size_small">
+                                <img class="information-panel__picture" src="assets/images/board.svg" alt="board" />
+                                <div id="line" class="information-panel__out">1</div>
+                            </div>
+                        </div>
+                        <div class="information-panel__content-right">
+                            <div class="information-panel__content-text">
+                                <span class="information-panel__text">level</span>
+                            </div>
+                            <div class="information-panel__content-board information-panel__content-board_size_small">
+                                <img class="information-panel__picture" src="assets/images/board.svg" alt="board" />
+                                <div id="level" class="information-panel__out">1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-information">
+                    <img class="control-information__picture" src="assets/images/control.svg" alt="board control" />
+                </div>
+            </div>
+        </div>
+        <script src="javascript/main.js"></script>
+    </body>
+</html>
