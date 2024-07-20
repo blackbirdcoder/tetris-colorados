@@ -8,6 +8,10 @@ html {
     height: 100%;
 }
 
+button {
+    outline: none;
+}
+
 :root {
     --swatch-1: #000000;
     --swatch-2: #222034;
@@ -20,6 +24,7 @@ html {
     --swatch-9: #99e550;
     --swatch-10: #9badb7;
     --swatch-11: #8f563b;
+    --swatch-12: #ff0000;
     --text-size: 35px;
     --text-size-small: 25px;
     --app-width: 1200px;
@@ -358,6 +363,19 @@ html {
     position: relative;
     font-size: var(--text-size);
     color: var(--swatch-5);
+}
+
+.button__decor-line::before {
+    content: '';
+    display: block;
+    width: 83%;
+    height: 4px;
+    background-color: var(--swatch-12);
+    position: absolute;
+    top: 40px;
+    left: 20px;
+    z-index: 10;
+    transform: rotate(351deg);
 }
 
 /* ==================== */

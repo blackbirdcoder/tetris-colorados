@@ -15,6 +15,7 @@ const gameWinRecord = document.getElementById('gameWinRecord');
 const gameWinLine = document.getElementById('gameWinLine');
 const gameWinScore = document.getElementById('gameWinScore');
 const gameWinLevel = document.getElementById('gameWinLevel');
+const btnSound = document.getElementById('sound');
 
 const settings = {
     scene: {
@@ -93,6 +94,34 @@ const settings = {
         6: { line: 120, value: 6, speed: 200 },
         7: { line: 140, value: 7, speed: 150 },
     },
+    sounds: {
+        bgMusic: {
+            music: new Audio('assets/sounds/bg-v1-mini.mp3'),
+            volume: 0.6,
+            loop: true,
+            muted: true,
+        },
+        line: {
+            sound: new Audio('assets/sounds/line.mp3'),
+            volume: 0.7,
+            muted: false,
+        },
+        level: {
+            sound: new Audio('assets/sounds/levelup.mp3'),
+            volume: 0.7,
+            muted: false,
+        },
+        loser: {
+            sound: new Audio('assets/sounds/loser.mp3'),
+            volume: 0.7,
+            muted: false,
+        },
+        win: {
+            sound: new Audio('assets/sounds/win.mp3'),
+            volume: 0.8,
+            muted: false,
+        },
+    },
 };
 
 const state = {
@@ -104,6 +133,9 @@ const state = {
     restProgress: null,
     gameOver: windowGameOver,
     gameWin: windowGameWin,
+    btnSound: btnSound,
+    soundGameOverPlay: true,
+    soundWinGamePlay: true,
 };
 
 const winner = {
@@ -130,7 +162,7 @@ function Figure(figures) {
     }.bind(this);
 }
 
-function Scene(scene, options, callbackFigureRandom) {
+function Scene(scene, options, callbackFigureRandom, callbackLinePlay) {
     this._scene = scene;
     this._options = options;
     this._matrix = [
@@ -244,6 +276,7 @@ function Scene(scene, options, callbackFigureRandom) {
                 this._progress.line += 1;
                 ++counterLine;
                 this.render();
+                callbackLinePlay();
             }
         }
 
@@ -319,7 +352,8 @@ function Control(
     callbackProcessedRecord,
     callbackPlayerProgress,
     callbackFigureRandom,
-    callbackFigureNextPreview
+    callbackFigureNextPreview,
+    callbackLoserPlay
 ) {
     this._keyboard = keyboard;
     this._kitScene = kitScene;
@@ -338,6 +372,10 @@ function Control(
                 if (this._kitScene.collisionCheck()) {
                     callbackProcessedRecord();
                     windowGameOver.style.display = 'flex';
+                    if (state.soundGameOverPlay) {
+                        callbackLoserPlay();
+                        state.soundGameOverPlay = !state.soundGameOverPlay;
+                    }
                     const playerProgress = callbackPlayerProgress();
                     loser.record.textContent = playerProgress.record;
                     loser.score.textContent = playerProgress.score;
@@ -383,6 +421,7 @@ function Control(
     this.pause = function () {
         state.pause = !state.pause;
         state.SceneStyle.style = state.pause ? 'filter: brightness(0.7);' : 'filter: none;';
+        this.blur();
     };
 
     this.newGame = function () {
@@ -398,10 +437,28 @@ function Control(
         state.restProgress();
         state.gameOver.style.display = 'none';
         state.gameWin.style.display = 'none';
+        state.soundGameOverPlay = !state.soundGameOverPlay;
+        state.soundWinGamePlay = !state.soundWinGamePlay;
+        settings.speed = 500;
+        this.blur();
     };
 }
 
-function Dashboard(score, record, line, level, next, initial, levels, notations, nameCssClasses, winner) {
+function Dashboard(
+    score,
+    record,
+    line,
+    level,
+    next,
+    initial,
+    levels,
+    notations,
+    nameCssClasses,
+    winner,
+    state,
+    callbackLevelPlay,
+    callbackWinPlay
+) {
     this._score = score;
     this._record = record;
     this._line = line;
@@ -411,6 +468,8 @@ function Dashboard(score, record, line, level, next, initial, levels, notations,
 
     this._playerProgress = initial;
     this._levels = levels;
+
+    this._currentLevel = 0;
 
     this.processRecord = function () {
         if (localStorage.record === undefined) localStorage.record = 0;
@@ -444,6 +503,10 @@ function Dashboard(score, record, line, level, next, initial, levels, notations,
     this._levelUp = function (lvl) {
         this._playerProgress.level = lvl;
         this._level.textContent = this._playerProgress.level;
+        if (this._currentLevel != this._playerProgress.level) {
+            callbackLevelPlay();
+            this._currentLevel = this._playerProgress.level;
+        }
     };
 
     this.achievementHandler = function (progress) {
@@ -472,7 +535,10 @@ function Dashboard(score, record, line, level, next, initial, levels, notations,
                 settings.speed = levels[6].speed;
             } else if (progress.line >= levels[7].line) {
                 this._levelUp(levels[7].value);
-                console.log('YOU WIN!');
+                if (state.soundWinGamePlay) {
+                    callbackWinPlay();
+                    state.soundWinGamePlay = !state.soundWinGamePlay;
+                }
                 windowGameWin.style.display = 'flex';
                 state.gameOver.style.display = 'none';
                 state.pause = true;
@@ -531,7 +597,73 @@ function Dashboard(score, record, line, level, next, initial, levels, notations,
     }.bind(this);
 }
 
+function Sound(optionSounds) {
+    this._globalMusic = false;
+    this._bgMusic = optionSounds.bgMusic.music;
+    this._bgMusic.volume = optionSounds.bgMusic.volume;
+    this._bgMusic.loop = optionSounds.bgMusic.loop;
+    this._bgMusic.muted = optionSounds.bgMusic.muted;
+
+    this._line = optionSounds.line.sound;
+    this._line.volume = optionSounds.line.volume;
+    this._line.muted = optionSounds.line.muted;
+
+    this._level = optionSounds.level.sound;
+    this._level.volume = optionSounds.level.volume;
+    this._level.muted = optionSounds.level.muted;
+
+    this._loser = optionSounds.loser.sound;
+    this._loser.volume = optionSounds.loser.volume;
+    this._loser.muted = optionSounds.loser.muted;
+
+    this._win = optionSounds.win.sound;
+    this._win.volume = optionSounds.win.volume;
+    this._win.muted = optionSounds.win.muted;
+
+    this.backgroundPlay = function () {
+        if (this._bgMusic.muted) {
+            this._bgMusic.muted = false;
+            this._bgMusic.play();
+            this._globalMusic = true;
+            state.btnSound.classList.remove('button__decor-line');
+        } else if (!this._bgMusic.muted) {
+            this._bgMusic.muted = true;
+            this._globalMusic = false;
+            state.btnSound.classList.add('button__decor-line');
+        }
+        state.btnSound.blur();
+    }.bind(this);
+
+    this.linePlay = function () {
+        if (this._globalMusic) {
+            this._line.play();
+        }
+    }.bind(this);
+
+    this.levelPlay = function () {
+        if (this._globalMusic) {
+            this._level.play();
+        }
+    }.bind(this);
+
+    this.loserPlay = function () {
+        if (this._globalMusic) {
+            this._loser.play();
+        }
+    }.bind(this);
+
+    this.winPlay = function () {
+        if (this._globalMusic) {
+            this._win.play();
+        }
+    }.bind(this);
+}
+
 (function main() {
+    //----------
+    const sound = new Sound(settings.sounds);
+    btnSound.addEventListener('click', sound.backgroundPlay);
+    //--------------
     const dashboard = new Dashboard(
         score,
         record,
@@ -542,12 +674,15 @@ function Dashboard(score, record, line, level, next, initial, levels, notations,
         settings.levels,
         settings.scene.notation,
         settings.scene.nameCssClasses,
-        winner
+        winner,
+        state,
+        sound.levelPlay,
+        sound.winPlay
     );
     dashboard.displaying();
     dashboard.dataStorageCheck();
     const figure = new Figure(settings.figures);
-    const gameScene = new Scene(scene, settings.scene, figure.getRandomFigure);
+    const gameScene = new Scene(scene, settings.scene, figure.getRandomFigure, sound.linePlay);
     const kitScene = gameScene.getKitScene();
     const control = new Control(
         settings.keyboard,
@@ -558,7 +693,8 @@ function Dashboard(score, record, line, level, next, initial, levels, notations,
         dashboard.processRecord,
         dashboard.getPlayerProgress,
         figure.getRandomFigure,
-        dashboard.figureNextPreview
+        dashboard.figureNextPreview,
+        sound.loserPlay
     );
     control.keyboardActivation();
     btnPause.addEventListener('click', control.pause);
