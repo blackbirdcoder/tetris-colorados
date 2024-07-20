@@ -470,6 +470,8 @@ function Dashboard(
     this._levels = levels;
 
     this._currentLevel = 0;
+    this._currentScore = 0;
+    this._currentLine - 0;
 
     this.processRecord = function () {
         if (localStorage.record === undefined) localStorage.record = 0;
@@ -506,11 +508,20 @@ function Dashboard(
         if (this._currentLevel != this._playerProgress.level) {
             callbackLevelPlay();
             this._currentLevel = this._playerProgress.level;
+            this._level.classList.add('js-text-animation');
+        } else {
+            this._level.classList.remove('js-text-animation');
         }
     };
 
     this.achievementHandler = function (progress) {
         this._progress = progress;
+        if (this._currentScore != this._playerProgress.score) {
+            this._score.classList.add('js-text-animation');
+            this._currentScore = this._playerProgress.score;
+        } else {
+            this._score.classList.remove('js-text-animation');
+        }
         if (this._playerProgress.score < progress.score) {
             this._playerProgress.score = progress.score;
             this._score.textContent = this._playerProgress.score;
@@ -549,6 +560,12 @@ function Dashboard(
             }
             this._playerProgress.line = progress.line;
             this._line.textContent = this._playerProgress.line;
+            if (this._currentLine != this._playerProgress.line) {
+                this._line.classList.add('js-text-animation');
+                this._currentLine = this._playerProgress.line;
+            } else {
+                this._line.classList.remove('js-text-animation');
+            }
         }
         this._record.textContent = this._playerProgress.record;
     };
@@ -660,10 +677,8 @@ function Sound(optionSounds) {
 }
 
 (function main() {
-    //----------
     const sound = new Sound(settings.sounds);
     btnSound.addEventListener('click', sound.backgroundPlay);
-    //--------------
     const dashboard = new Dashboard(
         score,
         record,

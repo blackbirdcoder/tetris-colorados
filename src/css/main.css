@@ -319,6 +319,16 @@ button {
     color: var(--swatch-7);
 }
 
+.js-text-animation {
+    animation: fontAnim 0.3s linear;
+}
+
+@keyframes fontAnim {
+    50% {
+        font-size: 50px;
+    }
+}
+
 /* =================== */
 
 /* MENU */
