@@ -97,7 +97,7 @@ const settings = {
     sounds: {
         bgMusic: {
             music: new Audio('assets/sounds/bg-v1-mini.mp3'),
-            volume: 0.6,
+            volume: 0.9,
             loop: true,
             muted: true,
         },
